@@ -1,0 +1,41 @@
+# Jimmy Goffaux <jimmy@goffaux>
+#
+# Documentations Install Libvirtd,Qemu,LVM
+
+apt-get install kvm qemu libvirt-bin lvm2 virtinst
+
+# Generer une partition pour stocker les donnees des VMs dessus 
+pvs
+# pvcreate si besoin
+vgs
+# vgcreate si besoin
+lvs
+# lvcreate si besoin
+mount /dev/VG/LV /var/lib/libvirt/images
+
+# Creer un disque qcow2
+qemu-img create -f qcow2  /var/lib/libvirt/images/vm00-disk0.qcow2 30G
+
+# S'assurer de la configuration bridge 
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet manual
+
+auto br0
+iface br0 inet static
+        address 10.0.0.1
+        network 10.0.0.0
+        netmask 255.0.0.0
+        broadcast 10.255.255.255
+        gateway 10.0.0.254
+        bridge_ports eth0
+        bridge_stp off
+        bridge_fd 0
+        bridge_maxwait 0
+
+# Installation VM
+virt-install --name=vm00 --arch=x86_64 --vcpus=2 --ram=1024 --hvm --connect=qemu:///system --network bridge:br0 --disk path=/var/lib/libvirt/images/vm00-disk0.qcow2 --accelerate --vnc --noautoconsole --cdrom /var/lib/libvirt/iso/ubuntu-12.04.3-server-amd64.iso
+(Vous pouvez remplacer --cdrom .. par --pxe)
