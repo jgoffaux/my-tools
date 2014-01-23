@@ -37,5 +37,7 @@ iface br0 inet static
         bridge_maxwait 0
 
 # Installation VM
-virt-install --name=vm00 --arch=x86_64 --vcpus=2 --ram=1024 --hvm --connect=qemu:///system --network bridge:br0 --disk path=/var/lib/libvirt/images/vm00-disk0.qcow2 --accelerate --vnc --noautoconsole --cdrom /var/lib/libvirt/iso/ubuntu-12.04.3-server-amd64.iso
+virt-install --name=vm00 --arch=x86_64 --vcpus=2 --ram=1024 --hvm --connect=qemu:///system --network bridge:br0 --disk path=/var/lib/libvirt/images/vm00-disk0.qcow2,device=disk,bus=virtio --accelerate --vnc --noautoconsole --cdrom /var/lib/libvirt/iso/ubuntu-12.04.3-server-amd64.iso
 (Vous pouvez remplacer --cdrom .. par --pxe)
+
+## Vous pouvez y acceder via virt-manager 
